@@ -1,69 +1,74 @@
 import ChessPieces.ChessPiece;
 import ChessPieces.PieceColor;
-
 import java.util.Scanner;
 
 public class Main {
+    private static final Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
         ChessBoard chessBoard = new ChessBoard();
-        PieceColor currentColor = PieceColor.WHITE;
-        boolean isFinished = false;
+        PieceColor currentTurn = PieceColor.WHITE;
+        boolean gameRunning = true;
 
-        // main game loop
-        while (!isFinished) {
+        while (gameRunning) {
             chessBoard.displayBoard();
-            System.out.println((currentColor == PieceColor.WHITE) ? "(WHITE):" : "(BLACK):");
-            ChessPiece selectedChessPiece = null;
-            while (selectedChessPiece == null || selectedChessPiece.getColor() != currentColor) {
-                System.out.println("(select): ");
-                selectedChessPiece = getChessPiece(chessBoard);
-            }
+            System.out.println(currentTurn + "'s turn:");
 
-            System.out.println("(target): ");
-            int[] targetCoords = getCoordsOnChessBoard();
-            while (!selectedChessPiece.isValidMove(targetCoords[0], targetCoords[1], chessBoard.getBoard())) {
-                System.out.println("(target2): ");
-                targetCoords = getCoordsOnChessBoard();
-            }
+            ChessPiece selectedPiece = selectValidPiece(chessBoard, currentTurn);
+            int[] targetCoords = selectValidMove(chessBoard, selectedPiece);
 
-            chessBoard.setPiece(selectedChessPiece.getCol(), selectedChessPiece.getRow(), null);
-            chessBoard.setPiece(targetCoords[0], targetCoords[1], selectedChessPiece);
+            // Move piece
+            chessBoard.setPiece(selectedPiece.getCol(), selectedPiece.getRow(), null);
+            chessBoard.setPiece(targetCoords[0], targetCoords[1], selectedPiece);
 
             chessBoard.updateChessPieces();
-            currentColor = (currentColor == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
-            // Checkmate
+            currentTurn = switchTurn(currentTurn);
+
+            // checkmate
         }
+
+        scanner.close();
     }
 
+    private static ChessPiece selectValidPiece(ChessBoard chessBoard, PieceColor currentTurn) {
+        ChessPiece piece;
+        do {
+            System.out.print("Select piece: ");
+            int[] coords = getCoordsOnChessBoard();
+            piece = chessBoard.getPiece(coords[0], coords[1]);
+        } while (piece == null || piece.getColor() != currentTurn);
 
-    public static ChessPiece getChessPiece(ChessBoard chessBoard) {
-        int[] playerInput = getCoordsOnChessBoard();
-        int col = playerInput[0];
-        int row = playerInput[1];
-        return chessBoard.getPiece(col, row);
+        return piece;
     }
 
-    // Returns the coords on the chess board given by the player
-    public static int[] getCoordsOnChessBoard() {
-        Scanner scanner = new Scanner(System.in);
-        String userInput = null;
-        boolean inputError = false;
+    private static int[] selectValidMove(ChessBoard chessBoard, ChessPiece piece) {
+        int[] targetCoords;
+        do {
+            System.out.print("Select target (e.g., A3): ");
+            targetCoords = getCoordsOnChessBoard();
+        } while (!piece.isValidMove(targetCoords[0], targetCoords[1], chessBoard.getBoard()));
 
-        // Input validation
-        while (userInput == null || userInput.length() != 2 || inputError) {
-            userInput = scanner.nextLine();
-            inputError = false;
+        return targetCoords;
+    }
 
-            if (!(Character.isLetter(userInput.charAt(0)) && Character.isDigit(userInput.charAt(1)))
-                    && userInput.length() == 2) {
-                inputError = true;
+    private static PieceColor switchTurn(PieceColor currentTurn) {
+        return (currentTurn == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
+    }
+
+    private static int[] getCoordsOnChessBoard() {
+        String userInput;
+        while (true) {
+            userInput = scanner.nextLine().trim().toUpperCase();
+            if (isValidChessNotation(userInput)) {
+                int col = userInput.charAt(0) - 'A';
+                int row = Character.getNumericValue(userInput.charAt(1)) - 1;
+                return new int[]{col, row};
             }
+            System.out.println("Invalid input! Use chess notation (e.g., A2, B7). Try again.");
         }
+    }
 
-        // Converting char values to int
-        int col = Character.getNumericValue(userInput.charAt(0)) - 10;
-        int row = Character.getNumericValue(userInput.charAt(1)) - 1;
-
-        return new int[] {col, row};
+    private static boolean isValidChessNotation(String input) {
+        return input.matches("^[A-H][1-8]$");
     }
 }

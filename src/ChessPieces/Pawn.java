@@ -6,15 +6,15 @@ public class Pawn extends ChessPiece {
     }
 
     @Override
-    public boolean isValidMove(int row, int col, int targetRow, int targetCol, ChessPiece[][] board) {
-        int dir = (this.color == PieceColor.WHITE) ? -1 : 1;
-        if (targetCol == col && targetRow == row + dir && board[targetRow][targetCol] == null) {
-            // Movement
+    public boolean isValidMove(int col, int row, ChessPiece[][] board) {
+        int dir = (this.color == PieceColor.WHITE) ? 1 : -1;
+        if (this.col == col && this.row + dir == row && board[row][col] == null) {
             return true;
         }
-        else if ((targetCol == col-1 || targetCol == col+1) && targetRow == row + dir && board[targetRow][targetCol].getColor() != color) {
-            return true;
-        }
+
+        // if ((this.col - 1 == col || this.col + 1 == col) && this.row + dir == row && board[row][col].getColor() != color) {
+        //     return true;
+        // }
         return false;
     }
 }

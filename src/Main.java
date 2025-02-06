@@ -30,6 +30,7 @@ public class Main {
         scanner.close();
     }
 
+    // Selecting chess piece of current player
     private static ChessPiece selectValidPiece(ChessBoard chessBoard, PieceColor currentTurn) {
         ChessPiece piece;
         do {
@@ -44,7 +45,7 @@ public class Main {
     private static int[] selectValidMove(ChessBoard chessBoard, ChessPiece piece) {
         int[] targetCoords;
         do {
-            System.out.print("Select target (e.g., A3): ");
+            System.out.print("Select target: ");
             targetCoords = getCoordsOnChessBoard();
         } while (!piece.isValidMove(targetCoords[0], targetCoords[1], chessBoard.getBoard()));
 

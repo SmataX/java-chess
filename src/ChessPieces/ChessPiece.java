@@ -12,6 +12,14 @@ public abstract class ChessPiece {
         this.icon = icon;
     }
 
+    public ChessPiece(PieceType type, PieceColor color, char icon, int col, int row) {
+        this.type = type;
+        this.color = color;
+        this.icon = icon;
+        this.col = col;
+        this.row = row;
+    }
+
     public int getCol() {
         return col;
     }

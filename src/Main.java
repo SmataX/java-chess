@@ -141,7 +141,6 @@ public class Main {
                                 board[row2][col2] = temp;
 
                                 if (!stillInCheck) {
-                                    System.out.println("--- false: " + chessPiece.getType());
                                     return false;
                                 }
                             }
@@ -150,7 +149,6 @@ public class Main {
                 }
             }
         }
-        System.out.println("--- true");
         return true;
     }
 }

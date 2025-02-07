@@ -1,12 +1,18 @@
 package ChessPieces;
 
 public class Rook extends ChessPiece{
+    protected boolean hasMoved = false;
+
     public Rook(PieceColor color) {
         super(PieceType.ROOK, color, 'r');
     }
 
     public Rook(PieceColor color, int col, int row) {
         super(PieceType.ROOK, color, 'r', col, row);
+    }
+
+    public boolean hasMoved() {
+        return this.hasMoved;
     }
 
 
@@ -28,6 +34,10 @@ public class Rook extends ChessPiece{
             curCol += dirCol;
             curRow += dirRow;
         }
-        return board[row][col] == null || board[row][col].getColor() != color;
+        if (board[row][col] == null || board[row][col].getColor() != color) {
+            hasMoved = true;
+            return true;
+        }
+        return false;
     }
 }

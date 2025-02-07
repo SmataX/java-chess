@@ -28,6 +28,10 @@ public abstract class ChessPiece {
         return row;
     }
 
+    public PieceType getType() {
+        return type;
+    }
+
     // Check if given move is valid
     public abstract boolean isValidMove(int col, int row, ChessPiece[][] board);
 
